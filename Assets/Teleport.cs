@@ -1,17 +1,36 @@
 using UnityEngine;
 
-public class Teleport : MonoBehaviour
+using UnityEngine.InputSystem;
+
+public class Teleporter : MonoBehaviour
 {
-    public Transform destination;
-    private void OnTriggerEnter(Collider other)
+    public UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider provider;
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rayInteractor;
+    public InputActionProperty teleportAction;
+
+    void Update()
     {
-        if (other.CompareTag("Player"))
+        // We check for "WasReleased" to ensure the teleport happens 
+        // only when the user finishes their intended gesture.
+        if (teleportAction.action.WasReleasedThisFrame())
         {
-            TeleportPlayer(other.Transform);
+            RequestTeleport();
         }
     }
-    private void TeleportPlayer(Transform player)
+
+    private void RequestTeleport()
     {
-        player.position = destination.position;
+        // The core logic: we sample the environment and validate 
+        // that we hit a valid surface before instructing the provider.
+        if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        {
+            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest request = new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest()
+            {
+                destinationPosition = hit.point,
+                matchOrientation = UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.MatchOrientation.TargetUpAndForward
+            };
+
+            provider.QueueTeleportRequest(request);
+        }
     }
 }
