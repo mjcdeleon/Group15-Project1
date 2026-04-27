@@ -3,23 +3,17 @@ using UnityEngine.InputSystem;
 
 public class Teleporter : MonoBehaviour
 {
-    public Transform xrOrigin; 
+    public Transform xrOrigin;
     public LayerMask groundLayer;
-    
-    private PlayerControls controls;
+    public InputActionReference teleportAction; // Use this slot in Inspector!
 
-    void Awake()
-    {
-        controls = new PlayerControls();
-    }
-
-    void OnEnable() => controls.Enable();
-    void OnDisable() => controls.Disable();
+    void OnEnable() => teleportAction.action.Enable();
+    void OnDisable() => teleportAction.action.Disable();
 
     void Update()
     {
-        // This checks if the "Teleport" action (left Trigger) was released
-        if (controls.Player.Teleport.WasReleasedThisFrame())
+        // Now it checks the specific action you drag into the Inspector
+        if (teleportAction.action.WasReleasedThisFrame())
         {
             TryTeleport();
         }
@@ -28,10 +22,13 @@ public class Teleporter : MonoBehaviour
     void TryTeleport()
     {
         RaycastHit hit;
-        // Raycast forward from this object (the controller)
         if (Physics.Raycast(transform.position, transform.forward, out hit, 10f, groundLayer))
         {
             xrOrigin.position = hit.point;
+        }
+        else
+        {
+            Debug.Log("Teleport Raycast missed! Check your Ground Layer.");
         }
     }
 }
