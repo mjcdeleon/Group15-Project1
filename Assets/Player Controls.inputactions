@@ -16,13 +16,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "New action1",
-                    "type": "Button",
+                    "name": "Turn",
+                    "type": "Value",
                     "id": "975432be-4d3d-4959-80bc-ff31d9c2337f",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -40,11 +40,11 @@
                 {
                     "name": "",
                     "id": "4013fcbd-325a-4fe5-95fa-5a13e7980fe4",
-                    "path": "",
+                    "path": "<Joystick>/stick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action1",
+                    "action": "Turn",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
