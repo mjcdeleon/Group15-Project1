@@ -11,154 +11,116 @@ public class SelectMani : MonoBehaviour
     //highlight for selectable
     public Color highlight = Color.yellow;
 
-    public InputActionReference leftTrigger;
-    public InputActionReference leftGrip;
-    public InputActionReference leftJoystick;
+    public InputActionReference rightTrigger;
+    public InputActionReference rightGrip;
 
-    public InputActionReference rightJoystick;
 
     private GameObject selectOJ;
     private Color regularShade;
+    private Renderer curr;
     private bool triggerUsed = false;
     private bool gripUsed = false;
+    private Quaternion controlStart;
+    private Quaternion objectStart;
 
     void OnEnable()
     {
-        leftTrigger.action.Enable();
-        leftGrip.action.Enable();
-        leftJoystick.action.Enable();
-        rightJoystick.action.Enable();
+        rightTrigger.action.Enable();
+        rightGrip.action.Enable();
     }
 
     void OnDisable()
     {
-        leftTrigger.action.Disable();
-        leftGrip.action.Disable();
-        leftJoystick.action.Disable();
-        rightJoystick.action.Disable();
+        rightTrigger.action.Disable();
+        rightGrip.action.Disable();
     }
 
     void Update()
-    {
-        SelectFirstMethod();
-        SelectSecondMethod();
-        ManipulateFull();
-    }
-
-    void SelectFirstMethod()
-    {
-        float value = leftTrigger.action.ReadValue<float>();
-        bool triggerOn = value > 0.5f;
-
-        if(triggerOn && !triggerUsed)
+    { 
+        if (rightTrigger.action == null || rightTrigger == null)
         {
-            SelectingOJ();
+            return;
+        }
+        if (rightGrip.action == null || rightGrip == null)
+        {
+            return;
+        }
+        var checkSpawn = GetComponent<SpawnObject>();
+        if (checkSpawn != null && checkSpawn.move)
+        {
+            return;
         }
 
-        triggerUsed = triggerOn;
-    }
+        bool triggerOn = rightTrigger.action.ReadValue<float>() > 0.1f;
+        bool gripOn = rightGrip.action.ReadValue<float>() > 0.1f;
 
-    void SelectSecondMethod()
-    {
-        float gripVal = leftGrip.action.ReadValue<float>();
-        bool gripOn = gripVal > 0.5f;
-
-        if (gripOn && !gripUsed)
+        if (gripOn || triggerOn)
         {
-            SelectingOJ();
-        }
-        gripUsed = gripOn;
-    }
-
-    void SelectingOJ()
-    {
-        RaycastHit wanted;
-
-        if (Physics.Raycast(transform.position, transform.forward, out wanted, rayDistance, canChoose))
-        { 
-            GameObject wantedObject = wanted.collider.gameObject;
-
-
-            //deselecting
-            if (selectOJ == wantedObject)
+            if (selectOJ == null)
             {
-                Deselect();
-                return;
+                Selecting();
             }
-
-            if (selectOJ != null)
+            else
             {
-                Deselect();
+                Manipulating(gripOn, triggerOn);
             }
-
-            Select(wantedObject);
         }
         else
         {
-            if(selectOJ != null)
+            if (selectOJ != null)
             {
-                Deselect();
+                noSelecting();
             }
         }
     }
 
-    void Select(GameObject objects)
+    void Selecting()
     {
-        selectOJ = objects;
-
-        Renderer addHigh = objects.GetComponentInChildren<Renderer>();
-        if (addHigh != null)
+        RaycastHit target;
+        if (Physics.Raycast(transform.position, transform.forward, out target, rayDistance, canChoose))
         {
-            regularShade = addHigh.material.color;
-            //adding highlighr
-            addHigh.material.color = highlight;
+            GameObject chosenOne = target.collider.gameObject;
+            selectOJ = chosenOne;
+            curr = selectOJ.GetComponentInChildren<Renderer>();
+            if (curr != null)
+            {
+                regularShade = curr.material.color;
+                curr.material.color = highlight;
+            }
+            controlStart = transform.rotation;
+            objectStart = selectOJ.transform.rotation;
         }
-
-        Debug.Log("Selected: " + objects.name);
     }
 
-    void Deselect()
+    void noSelecting()
     {
-        if(selectOJ == null)
+        if (curr != null)
         {
-            return;
+            curr.material.color = regularShade;
         }
-
-        Renderer colorChange = selectOJ.GetComponentInChildren<Renderer>();
-        if(colorChange != null)
-        {
-            colorChange.material.color = regularShade;
-        }
-
         selectOJ = null;
-        Debug.Log("Deselected");
+        curr = null;
     }
- 
-    void ManipulateFull()
+
+    void Manipulating(bool grip, bool trig)
     {
         if(selectOJ == null)
         {
             return;
         }
-
-        Vector2 leftSide = leftJoystick.action.ReadValue<Vector2>();
-        Vector2 rightSide = rightJoystick.action.ReadValue<Vector2>();
-
-        float gripVal = leftGrip.action.ReadValue<float>();
-        float trigVal = leftTrigger.action.ReadValue<float>();
-
-        bool gripOn = gripVal > 0.5f;
-        bool triggerOn = trigVal > 0.5f;
-
-        if(gripOn)
+        if (grip && trig)
         {
-            float rotateSP = 90f;
-            selectOJ.transform.Rotate(0f, leftSide.x * rotateSP * Time.deltaTime, 0f, Space.World);
+            selectOJ.transform.localScale += Vector3.one * 0.2f * Time.deltaTime;
         }
-        else if(triggerOn)
+        else if (grip)
         {
-            float moveSP = 1.5f;
-            selectOJ.transform.position += new Vector3(leftSide.x * moveSP * Time.deltaTime, 0f, leftSide.y * moveSP * Time.deltaTime);
+            Quaternion rotating = transform.rotation * Quaternion.Inverse(controlStart);
+            selectOJ.transform.rotation = rotating * objectStart;
+        }
+        else if (trig)
+        {
+            selectOJ.transform.position = transform.position + (transform.forward * 3.0f);
         }
     }
 }
+

@@ -2448,7 +2448,8 @@ MonoBehaviour:
   - {fileID: -927199367670048503, guid: df8f97d4e4c31014a8d40c8a130db1e8, type: 3}
   rightTrigger: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   rightGrip: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  rightJoystick: {fileID: -8198699208435500284, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightA: {fileID: 0}
+  move: 0
 --- !u!114 &1500200172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2466,10 +2467,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   highlight: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  leftTrigger: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  leftGrip: {fileID: -6131295136447488360, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  leftJoystick: {fileID: 6972639530819350904, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  rightJoystick: {fileID: -8198699208435500284, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightTrigger: {fileID: 0}
+  rightGrip: {fileID: 0}
 --- !u!4 &1500200173
 Transform:
   m_ObjectHideFlags: 0
@@ -2822,6 +2821,8 @@ GameObject:
   - component: {fileID: 6678509202078965008}
   - component: {fileID: 4238984354971172592}
   - component: {fileID: 4602308928559144526}
+  - component: {fileID: 6678509202078965010}
+  - component: {fileID: 6678509202078965009}
   m_Layer: 0
   m_Name: Right Controller
   m_TagString: Untagged
@@ -8619,6 +8620,44 @@ MonoBehaviour:
   - groupMember: {fileID: 2141651114268810773}
     overrideGroupMembers:
     - {fileID: 1883230248292302052}
+--- !u!114 &6678509202078965009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741237087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daf8f8ace336de449b9bbb992201acb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnObject
+  spawnables:
+  - {fileID: -927199367670048503, guid: df8f97d4e4c31014a8d40c8a130db1e8, type: 3}
+  - {fileID: -927199367670048503, guid: 31560d07ee3a63c41936e6f95e2881b3, type: 3}
+  rightTrigger: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightGrip: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightA: {fileID: -3875704489234743591, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  move: 0
+--- !u!114 &6678509202078965010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741237087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18672c0a2b7e79149a85c324efbf6637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectMani
+  rayDistance: 10
+  canChoose:
+    serializedVersion: 2
+    m_Bits: 1
+  highlight: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  rightTrigger: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightGrip: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!114 &6693052528506400548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8966,7 +9005,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3904471525210459167}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3cd49dc1a38aff4fa00676ddd64cf4e, type: 3}
   m_Name: 

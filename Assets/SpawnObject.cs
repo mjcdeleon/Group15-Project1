@@ -8,146 +8,128 @@ public class SpawnObject : MonoBehaviour
     private float spawnDistance = 1.5f;
     public InputActionReference rightTrigger;
     public InputActionReference rightGrip;
-    public InputActionReference rightJoystick;
+    public InputActionReference rightA;
 
     //selection and manipulation vars
     private int chosenIX = 0;
     private GameObject chosenOJ;
-    private bool move = false;
-    private bool triggerOn = false;
-    private bool joystickOn = false;
-
-    public global::System.Single SpawnDistance { get => spawnDistance; set => spawnDistance = value; }
-    public global::System.Single SpawnDistance1 { get => spawnDistance; set => spawnDistance = value; }
+    public bool move = false;
+    private Quaternion controlStart;
+    private Quaternion objectStart;
 
     void OnEnable()
     {
         rightTrigger.action.Enable();
         rightGrip.action.Enable();
-        rightJoystick.action.Enable();
+        rightA.action.Enable();
     }
 
     void OnDisable()
     {
         rightTrigger.action.Disable();
         rightGrip.action.Disable();
-        rightJoystick.action.Disable();
+        rightA.action.Disable();
     }
 
     void Update()
     {
-        ChooseOJ();
-        Spawning();
-        ManipulationOJ();
-    }
-
-    //all methods / vars handling spawnable obects
-    void Spawning()
-    {
-        float trigNum = rightTrigger.action.ReadValue<float>();
-        bool touched = trigNum > 0.5f;
-
-        if (touched && !triggerOn)
-        {
-            SpawnInObject();
-        }
-
-        if (!touched && triggerOn && move)
-        {
-            letGoOJ();
-        }
-
-        void SpawnInObject()
-        {
-            Vector3 PositionSP = transform.position + transform.forward * SpawnDistance;
-            Quaternion RotationSP = transform.rotation;
-
-            //fix bug: make sure when moving / rotation object it stays selected
-            //double check fix below
-
-            chosenOJ = Instantiate(spawnables[chosenIX], PositionSP, RotationSP);
-
-            Rigidbody stuck = chosenOJ.GetComponent<Rigidbody>();
-            if (stuck != null)
-            {
-                stuck.isKinematic = true;
-            }
-            //change move var
-            move = true;
-        }
-    }
-
-    void ManipulationOJ()
-    {
-        if (!move || spawnables == null)
+        if (rightA.action == null ||rightA == null)
         {
             return;
         }
-
-        Vector2 moveStick = rightJoystick.action.ReadValue<Vector2>();
-        float holdValue = rightGrip.action.ReadValue<float>();
-        bool gripOn = holdValue > 0.5f;
-
-        if (gripOn)
+        if (rightTrigger.action == null || rightTrigger == null)
         {
-            float speed = 90f;
-            chosenOJ.transform.Rotate(0f, moveStick.x * speed * Time.deltaTime, 0f, Space.World);
+            return;
         }
-        else
+        if (rightA.action.WasPressedThisFrame() && !move)
         {
-            float actionSpeed = 1.5f;
-            chosenOJ.transform.position += new Vector3(moveStick.x * actionSpeed * Time.deltaTime, 0f, moveStick.y * actionSpeed * Time.deltaTime);
+            choosingOJ();
         }
+        playerActions();
     }
 
-    void letGoOJ()
+    void choosingOJ()
+    {
+        chosenIX = (chosenIX + 1) % spawnables.Length;
+        Debug.Log("Selected Item: " + spawnables[chosenIX].name);
+    }
+
+    void playerActions()
+    {
+        bool gripOn = rightGrip.action.ReadValue<float>() > 0.5f;
+        bool triggerOn = rightTrigger.action.ReadValue<float>() > 0.5f;
+
+        if (gripOn || triggerOn)
+        {
+            if (!move)
+            {
+                Spawning();
+            }
+            else
+            {
+                {
+                    ManipulationOJ(gripOn, triggerOn);
+                }
+            }
+        }
+        else if (move)
+        {
+            letGoOJ();
+        }
+    }
+    //all methods / vars handling spawnable obects
+    void Spawning()
+    {
+        Vector3 PositionSP = transform.position + transform.forward * spawnDistance;
+        chosenOJ = Instantiate(spawnables[chosenIX], PositionSP, transform.rotation);
+
+        Rigidbody bodyOJ = chosenOJ.GetComponent<Rigidbody>();
+        if (bodyOJ != null)
+        {
+            bodyOJ.isKinematic = true;
+        }
+
+        controlStart = transform.rotation;
+        objectStart = chosenOJ.transform.rotation;
+        move = true;
+    }
+
+    void ManipulationOJ(bool grip, bool trig)
     {
         if (chosenOJ == null)
         {
             return;
         }
 
-        Rigidbody falling = chosenOJ.GetComponent<Rigidbody>();
-        if (falling != null)
+        if (grip && trig)
         {
-            falling.isKinematic = false;
+            chosenOJ.transform.localScale += Vector3.one * 0.2f * Time.deltaTime;
+        }
+        else if (grip)
+        {
+            Quaternion rotating = transform.rotation * Quaternion.Inverse(controlStart);
+            chosenOJ.transform.rotation = objectStart * rotating;
+        }
+        else if (trig)
+        {
+            chosenOJ.transform.position = transform.position + (transform.forward * spawnDistance);
+        }
+    }
+
+    void letGoOJ()
+    {
+        Rigidbody bodyOJ = chosenOJ.GetComponent<Rigidbody>();
+
+        if (bodyOJ != null)
+        {
+            bodyOJ.isKinematic = false;
+            bodyOJ.useGravity = true;
         }
 
         chosenOJ = null;
         move = false;
     }
 
-    void ChooseOJ()
-    {
-        if (move) //checking if there is already chosenOJ
-        {
-            return;
-        }
 
-        Vector2 chooseStick = rightJoystick.action.ReadValue<Vector2>();
-
-        if (!joystickOn)
-        {
-            if (chooseStick.x > 0.5f)
-            {
-                chosenIX = Mathf.Min(chosenIX + 1, spawnables.Length - 1);
-                joystickOn = true;
-                Debug.Log("Selected: " + spawnables[chosenIX].name);
-            }
-            else if (chooseStick.x < -0.5f)
-            {
-                chosenIX = Mathf.Max(chosenIX - 1, 0);
-                joystickOn = true;
-                Debug.Log("Selected: " + spawnables[chosenIX].name);
-            }
-        }
-
-        if (Mathf.Abs(chooseStick.x) < 0.2f)
-        {
-            joystickOn = false;
-            //reset joystick after selection/ exit selection
-        }
-
-    }
 
 }
