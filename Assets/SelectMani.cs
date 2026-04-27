@@ -22,6 +22,20 @@ public class SelectMani : MonoBehaviour
     private bool gripUsed = false;
     private Quaternion controlStart;
     private Quaternion objectStart;
+    private LineRenderer liner;
+
+    void Awake()
+    {
+        liner = GetComponent<LineRenderer>();
+        Debug.Log("LineRenderer found: " + (liner != null));
+        if (liner != null)
+        {
+            liner.positionCount = 2;
+            liner.startWidth = 0.01f;
+            liner.endWidth = 0.01f;
+            liner.material = new Material(Shader.Find("Sprites/Default"));
+        }
+    }
 
     void OnEnable()
     {
@@ -76,10 +90,28 @@ public class SelectMani : MonoBehaviour
 
     void Selecting()
     {
-        RaycastHit target;
-        Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);
-        if (Physics.Raycast(transform.position, transform.forward, out target, rayDistance, canChoose))
+        // Use negative forward to fix Y:180 rotation
+        Vector3 rayDirection = -transform.forward;
+
+        if (liner != null)
         {
+            liner.enabled = true;
+            liner.SetPosition(0, transform.position);
+            liner.SetPosition(1, transform.position + rayDirection * rayDistance);
+            liner.startColor = Color.red;
+            liner.endColor = Color.red;
+        }
+
+        RaycastHit target;
+        if (Physics.Raycast(transform.position, rayDirection, out target, rayDistance, canChoose))
+        {
+            if (liner != null)
+            {
+                liner.SetPosition(1, target.point);
+                liner.startColor = Color.green;
+                liner.endColor = Color.green;
+            }
+
             GameObject chosenOne = target.collider.gameObject;
             selectOJ = chosenOne;
             curr = selectOJ.GetComponentInChildren<Renderer>();
@@ -95,6 +127,10 @@ public class SelectMani : MonoBehaviour
 
     void noSelecting()
     {
+        if (liner != null)
+        {
+            liner.enabled = false;
+        }
         Rigidbody bodyOJ = selectOJ.GetComponent<Rigidbody>();
         if (bodyOJ != null)
         {
