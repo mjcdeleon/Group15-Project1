@@ -1,36 +1,37 @@
 using UnityEngine;
-
 using UnityEngine.InputSystem;
 
 public class Teleporter : MonoBehaviour
 {
-    public UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider provider;
-    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rayInteractor;
-    public InputActionProperty teleportAction;
+    public Transform xrOrigin; 
+    public LayerMask groundLayer;
+    
+    private PlayerControls controls;
+
+    void Awake()
+    {
+        controls = new PlayerControls();
+    }
+
+    void OnEnable() => controls.Enable();
+    void OnDisable() => controls.Disable();
 
     void Update()
     {
-        // We check for "WasReleased" to ensure the teleport happens 
-        // only when the user finishes their intended gesture.
-        if (teleportAction.action.WasReleasedThisFrame())
+        // This checks if the "Teleport" action (left Trigger) was released
+        if (controls.Player.Teleport.WasReleasedThisFrame())
         {
-            RequestTeleport();
+            TryTeleport();
         }
     }
 
-    private void RequestTeleport()
+    void TryTeleport()
     {
-        // The core logic: we sample the environment and validate 
-        // that we hit a valid surface before instructing the provider.
-        if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        RaycastHit hit;
+        // Raycast forward from this object (the controller)
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 10f, groundLayer))
         {
-            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest request = new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest()
-            {
-                destinationPosition = hit.point,
-                matchOrientation = UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.MatchOrientation.TargetUpAndForward
-            };
-
-            provider.QueueTeleportRequest(request);
+            xrOrigin.position = hit.point;
         }
     }
 }
