@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Teleporter
   xrOrigin: {fileID: 1524532231}
-  teleportAction: {fileID: -2285606260358989112, guid: 149bc6b6427234a6281ec3d463c5b845, type: 3}
+  teleportAction: {fileID: 1263111715868034790, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -240,7 +240,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 91ff3830fc4055a4fb0d0d2be32101a7, type: 2}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
