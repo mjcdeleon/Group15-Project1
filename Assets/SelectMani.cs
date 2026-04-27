@@ -5,7 +5,7 @@ public class SelectMani : MonoBehaviour
 {
     //starting vars/ ray set up
 
-    public float rayDistance = 10f;
+    public float rayDistance = 20f;
     public LayerMask canChoose;
 
     //highlight for selectable
@@ -77,6 +77,7 @@ public class SelectMani : MonoBehaviour
     void Selecting()
     {
         RaycastHit target;
+        Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);
         if (Physics.Raycast(transform.position, transform.forward, out target, rayDistance, canChoose))
         {
             GameObject chosenOne = target.collider.gameObject;
