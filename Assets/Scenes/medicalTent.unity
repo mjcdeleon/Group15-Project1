@@ -205,10 +205,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Teleporter
   xrOrigin: {fileID: 1524532231}
+  teleportAction: {fileID: -2285606260358989112, guid: 149bc6b6427234a6281ec3d463c5b845, type: 3}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  teleportAction: {fileID: -2285606260358989112, guid: 149bc6b6427234a6281ec3d463c5b845, type: 3}
+  arcSpeed: 8
+  arcTimeStep: 0.05
+  arcResolution: 30
+  validColor: {r: 0, g: 1, b: 0, a: 1}
+  invalidColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!120 &5646657
 LineRenderer:
   serializedVersion: 3
@@ -281,7 +286,7 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0, b: 0, a: 1}
+      key0: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -306,7 +311,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
