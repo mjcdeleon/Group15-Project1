@@ -23,6 +23,7 @@ public class Teleporter : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
         lineRenderer.positionCount = arcResolution;
+
     }
 
     void Update()
@@ -78,6 +79,7 @@ public class Teleporter : MonoBehaviour
             pos = nextPos;
             velocity = nextVelocity;
         }
+
 
         // Color the line green if valid, red if not
         lineRenderer.startColor = hasValidTarget ? validColor : invalidColor;
