@@ -108,7 +108,7 @@ public class SpawnObject : MonoBehaviour
         else if (grip)
         {
             Quaternion rotating = transform.rotation * Quaternion.Inverse(controlStart);
-            chosenOJ.transform.rotation = objectStart * rotating;
+            chosenOJ.transform.rotation = rotating * objectStarting;
         }
         else if (trig)
         {
@@ -124,6 +124,7 @@ public class SpawnObject : MonoBehaviour
         {
             bodyOJ.isKinematic = false;
             bodyOJ.useGravity = true;
+            bodyOJ.WakeUp();
         }
 
         chosenOJ = null;

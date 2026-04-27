@@ -94,6 +94,13 @@ public class SelectMani : MonoBehaviour
 
     void noSelecting()
     {
+        Rigidbody bodyOJ = selectOJ.GetComponent<Rigidbody>();
+        if (bodyOJ != null)
+        {
+            bodyOJ.isKinematic = false;
+            bodyOJ.useGravity = true;
+            bodyOJ.WakeUp();
+        }
         if (curr != null)
         {
             curr.material.color = regularShade;

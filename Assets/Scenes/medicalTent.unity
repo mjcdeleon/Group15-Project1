@@ -780,8 +780,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   highlight: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  rightTrigger: {fileID: 0}
-  rightGrip: {fileID: 0}
+  rightTrigger: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightGrip: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!114 &244986965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,10 +794,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daf8f8ace336de449b9bbb992201acb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnObject
-  spawnables: []
-  rightTrigger: {fileID: 0}
-  rightGrip: {fileID: 0}
-  rightA: {fileID: 0}
+  spawnables:
+  - {fileID: -927199367670048503, guid: e647c15398a10fb4eb947f52be5bb123, type: 3}
+  - {fileID: -927199367670048503, guid: 54577ef589ab9974f9f1dedf5b093e35, type: 3}
+  rightTrigger: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightGrip: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightA: {fileID: 5566649036228590507, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   move: 0
 --- !u!1 &318274609
 GameObject:
