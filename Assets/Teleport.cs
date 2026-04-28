@@ -23,6 +23,8 @@ public class Teleporter : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
         lineRenderer.positionCount = arcResolution;
+
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
     }
 
     void Update()
