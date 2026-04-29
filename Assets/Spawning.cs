@@ -92,16 +92,46 @@ public class Spawning : MonoBehaviour
 
         currentDistance = spawnDistance; // start at default distance
         Vector3 spawnPos = GetHoldPosition();
+        spawnPos.y += 0.1f;
 
         chosenOJ = Instantiate(spawnables[chosenIX], spawnPos, transform.rotation);
-
-        Rigidbody rb = chosenOJ.GetComponent<Rigidbody>();
-        if (rb != null)
+        Collider[] colliders = chosenOJ.GetComponentsInChildren<Collider>();
+        if (colliders.Length == 0)
         {
-            rb.isKinematic = true;
-            rb.useGravity = false;
+            
+            BoxCollider bc = chosenOJ.AddComponent<BoxCollider>();
+
+            
+            Renderer[] renderers = chosenOJ.GetComponentsInChildren<Renderer>();
+            if (renderers.Length > 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                foreach (Renderer r in renderers)
+                {
+                    bounds.Encapsulate(r.bounds);
+                }
+                bc.center = chosenOJ.transform.InverseTransformPoint(bounds.center);
+                bc.size = chosenOJ.transform.InverseTransformVector(bounds.size);
+            }
+        }
+        foreach (Collider col in colliders)
+        {
+            // Fix concave mesh colliders by making them convex
+            MeshCollider mc = col as MeshCollider;
+            if (mc != null)
+            {
+                mc.convex = true;
+            }
+        }
+        Rigidbody rb = chosenOJ.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = chosenOJ.AddComponent<Rigidbody>();
         }
 
+
+        rb.isKinematic = true;
+        rb.useGravity = false;
         controlStart = transform.rotation;
         objectStart = chosenOJ.transform.rotation;
         isHolding = true;
@@ -141,7 +171,7 @@ public class Spawning : MonoBehaviour
 
     Vector3 GetHoldPosition()
     {
-        return transform.position + (-transform.forward) * currentDistance;
+        return transform.position + transform.forward * currentDistance;
     }
 
     void LetGoObject()
@@ -149,11 +179,15 @@ public class Spawning : MonoBehaviour
         if (chosenOJ == null) return;
 
         Rigidbody rb = chosenOJ.GetComponent<Rigidbody>();
-        if (rb != null)
+        if(rb == null)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
+            rb = chosenOJ.AddComponent<Rigidbody>();
         }
+     
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.isKinematic = false;
+        rb.useGravity = true;
+        
 
         chosenOJ = null;
         isHolding = false;
