@@ -94,12 +94,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Teleport"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""499b96dd-45f4-4de6-bcbe-dd314894731e"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Turn"",
@@ -115,8 +115,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""4f6fdea1-c0fc-4866-be21-571d3852d58c"",
-                    ""path"": ""<XRController>{LeftHand}/triggerPressed"",
-                    ""interactions"": """",
+                    ""path"": ""<XRController>{LeftHand}/{Primary2DAxis}"",
+                    ""interactions"": ""Sector(directions=1)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Teleport"",
